@@ -42,10 +42,24 @@ function toast(msg) {
 }
 
 /* ============================================================
-   1. Nama tamu dari link  (?to=Nama+Tamu)
+   1. Nama tamu dari link  (?to=Nama+Tamu%26Partner)
    ============================================================ */
 (function guest() {
-  const to = new URLSearchParams(location.search).get('to');
+  const params = new URLSearchParams(location.search);
+  let to = params.get('to');
+
+  // Kompatibel dengan link lama yang menulis "&" langsung di nama tamu.
+  if (to) {
+    const queryParts = location.search.slice(1).split('&');
+    const toPart = queryParts.findIndex(part => part.split('=')[0] === 'to');
+    const extraParts = [];
+    for (let i = toPart + 1; i < queryParts.length; i++) {
+      if (queryParts[i].includes('=')) break;
+      if (queryParts[i]) extraParts.push(decodeURIComponent(queryParts[i].replace(/\+/g, ' ')).trim());
+    }
+    if (extraParts.length) to = to.trimEnd() + ' & ' + extraParts.join(' & ');
+  }
+
   if (to) $('#guestName').textContent = to.trim().slice(0, 60);
 })();
 
@@ -223,11 +237,6 @@ document.addEventListener('visibilitychange', () => {
    8. Hadiah: buka/tutup + salin nomor rekening
    ============================================================ */
 (function gift() {
-  const btn = $('#giftToggle'), body = $('#giftBody');
-  if (btn && body) btn.addEventListener('click', () => {
-    const open = body.classList.toggle('open');
-    btn.setAttribute('aria-expanded', open);
-  });
   $$('.copy').forEach(b => b.addEventListener('click', async () => {
     const text = $('#' + b.dataset.copyTarget).textContent.trim();
     try { await navigator.clipboard.writeText(text); }

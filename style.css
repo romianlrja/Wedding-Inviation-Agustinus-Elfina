@@ -226,8 +226,7 @@ a{color:inherit}
 /* ============================================================
    GIFT
    ============================================================ */
-.gift-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .6s var(--ease);margin-top:1.2rem}
-.gift-body.open{grid-template-rows:1fr}
+.gift-body{display:grid;grid-template-rows:1fr;margin-top:1.2rem}
 .gift-inner{overflow:hidden;display:grid;gap:.9rem;text-align:center}
 .gift .btn{display:block;margin:0 auto}
 .gift-card{margin-top:.2rem}
